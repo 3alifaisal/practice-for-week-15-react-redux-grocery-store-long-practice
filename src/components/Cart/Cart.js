@@ -1,43 +1,42 @@
-import CartItem from './CartItem';
-import './Cart.css';
-
+import CartItem from "./CartItem";
+import "./Cart.css";
+import { useDispatch, useSelector } from "react-redux";
+import { emptyCartAction } from "../../store/cart";
+import { getItemWithDetails } from "../../store/cart";
 function Cart() {
-  const cart = {};
-  const produce = {};
+  const dispatch = useDispatch();
 
-  const cartItems = Object.values(cart)
-    .map(item => {
-      return {
-        ...item,
-        ...produce[item.id]
-      };
-    });
+  const cartItems = useSelector(getItemWithDetails);
 
-  if (!cartItems || !cartItems.length) return (
-    <div className="cart">
-      No items in the cart. Start selecting items to purchase.
-    </div>
-  );
+  if (!cartItems || !cartItems.length)
+    return (
+      <div className="cart">
+        No items in the cart. Start selecting items to purchase.
+      </div>
+    );
 
   const onSubmit = (e) => {
     e.preventDefault();
     window.alert(
       "Purchased the following:\n" +
-      `${cartItems.map(item => `${item.count} of ${item.name}`).join('\n')}`
+        `${cartItems.map((item) => `${item.count} of ${item.name}`).join("\n")}`
     );
-  }
+    dispatch(emptyCartAction());
+  };
 
   return (
     <div className="cart">
       <ul>
-        {cartItems.map(item => <CartItem key={item.id} item={item}/>)}
+        {cartItems.map((item) => (
+          <CartItem key={item.id} item={item} />
+        ))}
       </ul>
       <hr />
       <form onSubmit={onSubmit}>
         <button type="submit">Purchase</button>
       </form>
     </div>
-  )
+  );
 }
 
 export default Cart;
